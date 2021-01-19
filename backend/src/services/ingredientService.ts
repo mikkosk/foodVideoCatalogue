@@ -1,12 +1,11 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { Ingredient, newIngredient } from "../types";
+import { DatabaseIngredient, newIngredient } from "../types";
 const pgp = require('pg-promise')();
 
-const addIngredients = async(entries: newIngredient[]): Promise<QueryResult[]> => {
+const addIngredients = async(entries: newIngredient[]): Promise<DatabaseIngredient[]> => {
     const cs = new pgp.helpers.ColumnSet(['videoId', 'quantity', 'produceId'], {table: 'ingredients'})
     const query = pgp.helpers.insert(entries, cs).toLowerCase() + " returning *"
-    console.log(query)
     const newIngredients: QueryResult = await pool.query(
         query
     );

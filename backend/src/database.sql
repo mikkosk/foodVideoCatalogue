@@ -6,7 +6,7 @@ CREATE TABLE produce(
     produceId SERIAL PRIMARY KEY,
     produceName VARCHAR(255) NOT NULL UNIQUE,
     price NUMERIC DEFAULT 0.00,
-    calories INTEGER DEFAULT 0
+    calories NUMERIC DEFAULT 0.00
 );
 
 CREATE TABLE ingredients(
@@ -24,7 +24,9 @@ CREATE TABLE videos(
     clicks INTEGER DEFAULT 0,
     timeInMinutes INTEGER DEFAULT 0,
     vegetarian BOOLEAN DEFAULT FALSE,
-    added BIGINT NOT NULL
+    added BIGINT NOT NULL,
+    videoname VARCHAR(255) NOT NULL,
+    channelname VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE users(

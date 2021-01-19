@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toNewProduce = void 0;
+exports.toNewVideo = exports.toNewUser = exports.toNewIngredient = exports.toNewProduce = void 0;
 // CHECK FOR TYPES
 var isString = function (text) {
     return typeof text === 'string' || text instanceof String;
@@ -16,10 +16,16 @@ var parseGenericTextField = function (text, error) {
     return text;
 };
 var parseGenericNumberField = function (number, error) {
-    if (!number || !isNumber(number)) {
+    if ((!number && number !== 0) || !isNumber(number)) {
         throw new Error('Missing or invalid ' + error);
     }
     return number;
+};
+var parseGenericBooleanField = function (boolean, error) {
+    if (typeof boolean === 'boolean') {
+        return boolean;
+    }
+    throw new Error('Missing or invalid ' + error);
 };
 // PARSE INTO TYPES
 exports.toNewProduce = function (object) {
@@ -29,4 +35,29 @@ exports.toNewProduce = function (object) {
         caloriesPerGram: parseGenericNumberField(object.caloriesPerGram, "calories")
     };
     return newProduce;
+};
+exports.toNewIngredient = function (object) {
+    var newIngredient = {
+        produceId: parseGenericNumberField(object.produceId, "produce id"),
+        quantity: parseGenericNumberField(object.quantity, "quantity"),
+        videoId: parseGenericNumberField(object.videoId, "video id")
+    };
+    return newIngredient;
+};
+exports.toNewUser = function (object) {
+    var newUser = {
+        username: parseGenericTextField(object.username, "username"),
+        password: parseGenericTextField(object.password, "password")
+    };
+    return newUser;
+};
+exports.toNewVideo = function (object) {
+    var newVideo = {
+        //Urlille oma parseri kun api lisätään
+        videoUrl: parseGenericTextField(object.videoUrl, "url"),
+        timeInMinutes: parseGenericNumberField(object.timeInMinutes, "time"),
+        vegetarian: parseGenericBooleanField(object.vegetarian, "vegetarian "),
+        added: Date.now()
+    };
+    return newVideo;
 };

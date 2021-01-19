@@ -40,17 +40,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var db_1 = __importDefault(require("../db"));
+var getAllProduce = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var allProduce;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, db_1.default.query("SELECT * FROM produce")];
+            case 1:
+                allProduce = _a.sent();
+                return [2 /*return*/, allProduce.rows];
+        }
+    });
+}); };
+var getProduce = function (produceId) { return __awaiter(void 0, void 0, void 0, function () {
+    var produce;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, db_1.default.query("SELECT * FROM produce WHERE produceid = $1", [produceId])];
+            case 1:
+                produce = _a.sent();
+                return [2 /*return*/, produce.rows[0]];
+        }
+    });
+}); };
 var addProduce = function (entry) { return __awaiter(void 0, void 0, void 0, function () {
     var produceName, pricePerGram, caloriesPerGram, newProduce;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 produceName = entry.produceName, pricePerGram = entry.pricePerGram, caloriesPerGram = entry.caloriesPerGram;
-                return [4 /*yield*/, db_1.default.query("INSERT INTO produce (produceName, price, calories) VALUES($1, $2, $3)", [produceName, pricePerGram, caloriesPerGram])];
+                return [4 /*yield*/, db_1.default.query("INSERT INTO produce (produceName, price, calories) VALUES($1, $2, $3) RETURNING *", [produceName, pricePerGram, caloriesPerGram])];
             case 1:
                 newProduce = _a.sent();
-                return [2 /*return*/, newProduce];
+                return [2 /*return*/, newProduce.rows[0]];
         }
     });
 }); };
-exports.default = { addProduce: addProduce };
+var deleteProduce = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, db_1.default.query("DELETE FROM produce WHERE produceid = $1", [id])];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.default = { addProduce: addProduce, deleteProduce: deleteProduce, getAllProduce: getAllProduce, getProduce: getProduce };

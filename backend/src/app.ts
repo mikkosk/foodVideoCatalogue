@@ -5,6 +5,7 @@ import videoRouter from './routers/videoRouter'
 import produceRouter from './routers/produceRouter'
 import ingredientRouter from './routers/ingredientRouter'
 import userRouter from './routers/userRouter'
+import loginRouter from './routers/loginRouter'
 
 
 const app = express();
@@ -13,7 +14,8 @@ app.use(cors());
 
 app.use('/api/user', userRouter);
 app.use('/api/videos', videoRouter);
-app.use('/api/ingredient', ingredientRouter);
+app.use('/api/ingredients', ingredientRouter);
 app.use('/api/produce', produceRouter);
+app.use('/api/login', loginRouter);
 
 export default app;

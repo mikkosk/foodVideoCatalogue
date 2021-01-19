@@ -11,5 +11,4 @@ var PORT = process.env.PORT || 3001;
 server.listen(PORT, function () {
     console.log(process.env.NODE_ENV);
     console.log("Server running on port " + PORT);
-    console.log(process.env.DBP);
 });
