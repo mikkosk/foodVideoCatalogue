@@ -11,7 +11,15 @@ import loginRouter from './routers/loginRouter'
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'buildFrontend/build')));
+console.log(path.join(__dirname, '../buildFrontend/build'))
+app.use(express.static(path.join(__dirname, '../buildFrontend/build')));
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, '../buildFrontend/build/index.html'), function(err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    });
+  });
 
 app.use('/api/user', userRouter);
 app.use('/api/videos', videoRouter);
