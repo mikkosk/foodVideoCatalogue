@@ -1,6 +1,8 @@
-const Pool = require("pg").Pool;
+var pg = require("pg");
 import dotenv from 'dotenv';
 dotenv.config()
+
+pg.defaults.ssl = true;
 
 const devConfig = {
     user: process.env.DBUSER,
@@ -14,6 +16,6 @@ const proConfig = {
     connectionString: process.env.DATABASE_URL
 }
 
-const pool = new Pool(process.env.NODE_ENV === "production" ? proConfig : devConfig)
+const pool = new pg.Pool(process.env.NODE_ENV === "production" ? proConfig : devConfig)
 
 export default pool;
