@@ -12,7 +12,7 @@ const addUser = async (entry: newUser): Promise<DatabaseUser> => {
         "INSERT INTO users (username, hashcode) VALUES($1, $2) RETURNING *",
         [username, passwordHash]
     );
-    
+
     return newUser.rows[0];
 };
 
@@ -23,6 +23,7 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
         LEFT JOIN (SELECT users.*, JSON_AGG(json_build_object(
                 'videoid', videos.videoid,
                 'videourl', videos.videourl,
+                'username', videos.username,
                 'favourites', videos.favourites,
                 'clicks', videos.clicks,
                 'timeinminutes', videos.timeinminutes,
@@ -60,6 +61,7 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
                 JSON_AGG(json_build_object(
                 'videoid', favourites.videoid,
                 'videourl', favourites.videourl,
+                'username', favourites.username,
                 'favourites', favourites.favourites,
                 'clicks', favourites.clicks,
                 'timeinminutes', favourites.timeinminutes,
@@ -106,6 +108,7 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
         LEFT JOIN (SELECT users.*, JSON_AGG(json_build_object(
                 'videoid', videos.videoid,
                 'videourl', videos.videourl,
+                'username', videos.username,
                 'favourites', videos.favourites,
                 'clicks', videos.clicks,
                 'timeinminutes', videos.timeinminutes,
@@ -143,6 +146,7 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
                 JSON_AGG(json_build_object(
                 'videoid', favourites.videoid,
                 'videourl', favourites.videourl,
+                'username', favourites.username,
                 'favourites', favourites.favourites,
                 'clicks', favourites.clicks,
                 'timeinminutes', favourites.timeinminutes,
