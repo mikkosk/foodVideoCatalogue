@@ -11,7 +11,7 @@
     "start": "cross-env NODE_ENV=production node build/src/index.js",
     "build:ui": "cd buildFrontend && rm -rf build && cd ../../frontend/my-app && npm run build --prod && cp -r build ../../backend/buildFrontend/",
     "deploy": "git push heroku main",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",    
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail"
   },
   "author": "mikkosk",
@@ -39,6 +39,7 @@
     "@types/node": "^14.14.6",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.12.1",
     "ts-node-dev": "^1.0.0"
   }
