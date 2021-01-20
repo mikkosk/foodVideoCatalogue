@@ -24,7 +24,7 @@ const AddProduce: React.FC = () => {
 
     const submitProduce = async () => {
         if(suitableValues) {
-            
+
             try {
                 const produce = await produceService.addProduce({produceName: name, caloriesPerGram: Number(calories), pricePerGram: Number(price)})
                 dispatch(setProduce(produce))

@@ -43,7 +43,7 @@ const AddVideoPage: React.FC = () => {
                 setTimeout(() => dispatch(removeNotification()), 2000)
             }
         }
-        
+
         waitForDispatch()
     }, [dispatch])
 
@@ -176,7 +176,7 @@ const AddVideoPage: React.FC = () => {
                         <div className="top-margin">
                             <input className="text-input round-top set-width as-ablock"onChange={({target}) => (setSearch(target.value))} placeholder='Search for produce...'></input>
                             <select className="text-input round-bottom set-width as-abloc" defaultValue={undefined} onChange={({target}) => (setIngPro(Number(target.value)))}>
-                                <option value={undefined}>Choose produce..</option>
+                                <option value={undefined}>Choose produce...</option>
                                 {Object.values(produce).filter((p) => 
                                 p.produceName.toLowerCase().includes(search.toLowerCase()) || !search)
                                 .sort((a, b) => a.produceName.toLowerCase() <= b.produceName.toLowerCase() ? -1 : 1)

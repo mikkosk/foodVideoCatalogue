@@ -16,6 +16,11 @@ app.use(express_1.default.json());
 app.use(cors_1.default());
 console.log(path_1.default.join(__dirname, '../buildFrontend/build'));
 app.use(express_1.default.static(path_1.default.join(__dirname, '../buildFrontend/build')));
+app.use('/api/user', userRouter_1.default);
+app.use('/api/videos', videoRouter_1.default);
+app.use('/api/ingredients', ingredientRouter_1.default);
+app.use('/api/produce', produceRouter_1.default);
+app.use('/api/login', loginRouter_1.default);
 app.get('/*', function (req, res) {
     res.sendFile(path_1.default.join(__dirname, '../buildFrontend/build/index.html'), function (err) {
         if (err) {
@@ -23,9 +28,4 @@ app.get('/*', function (req, res) {
         }
     });
 });
-app.use('/api/user', userRouter_1.default);
-app.use('/api/videos', videoRouter_1.default);
-app.use('/api/ingredients', ingredientRouter_1.default);
-app.use('/api/produce', produceRouter_1.default);
-app.use('/api/login', loginRouter_1.default);
 exports.default = app;

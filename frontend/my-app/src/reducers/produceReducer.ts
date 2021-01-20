@@ -9,6 +9,10 @@ const produceSlice = createSlice({
     reducers: {
         setProduce(state, action: PayloadAction<Produce[]>) {
         const produce: Produce[] = action.payload
+        if(!action.payload || action.payload.length === 0) {
+            return state
+        }
+        console.log(produce)
         return {...state, produce: {...state.produce, ...produce.reduce((memo, pro: Produce) => ({...memo, [pro.id]: pro}), {})}}
         }
     }

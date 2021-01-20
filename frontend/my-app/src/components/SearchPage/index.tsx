@@ -29,6 +29,7 @@ export const SearchPage: React.FC = () => {
         const waitDispatch = async() => {
             try {
                 const result = await videoService.getVideos({})
+                console.log(result)
                 dispatch(setVideos(result))
             } catch (e) {
                 dispatch(addNotification({message: e.response.data, error: true}))

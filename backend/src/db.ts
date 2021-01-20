@@ -1,7 +1,5 @@
 var pg = require("pg");
-import dotenv from 'dotenv';
-
-pg.defaults.ssl = true;
+require('dotenv').config()
 
 const devConfig = {
     user: process.env.DBUSER,
@@ -13,7 +11,7 @@ const devConfig = {
 
 const proConfig = {
     connectionString: `${process.env.DATABASE_URL}`,
-    ssl: { rejectUnauthorized: false }
+    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
 }
 
 const pool = new pg.Pool(process.env.NODE_ENV === "production" ? proConfig : devConfig)
