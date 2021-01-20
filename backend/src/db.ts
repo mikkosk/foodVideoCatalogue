@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 const pool = new Pool({
-    user: "postgres",
-    password: process.env.DBP,
-    host: "localhost",
-    port: 5432,
-    database: "fvc"
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
+    host: process.env.DBHOST,
+    port: process.env.DBPORT,
+    database: process.env.DBDB,
 })
 
 export default pool;

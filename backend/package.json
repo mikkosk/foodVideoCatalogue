@@ -6,9 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "ts-node": "ts-node",
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "cross-env NODE_ENV=dev ts-node-dev src/index.ts",
     "tsc": "tsc",
-    "start": "node build/index.js"
+    "start": "cross-env NODE_ENV=production node build/src/index.js",
+    "build:ui": "cd buildFrontend && rm -rf build && cd ../../frontend/my-app && npm run build --prod && cp -r build ../../backend/buildFrontend/",
+    "deploy": "git push heroku main",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",    
+    "logs:prod": "heroku logs --tail"
   },
   "author": "mikkosk",
   "license": "ISC",
