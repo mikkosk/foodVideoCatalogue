@@ -2,7 +2,7 @@ import axios from 'axios'
 import { NewUser, User } from "../types"
 import authenticationHelper from '../utils/authenticationHelper'
 
-const baseUrl = 'http://localhost:3001/api/user'
+const baseUrl = '/api/user'
 
 const addUser = async (newUser: NewUser): Promise<User> => {
     const res = await axios.post(baseUrl, newUser)

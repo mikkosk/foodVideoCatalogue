@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import { RegisterPage } from './components/RegisterPage';
 import { UserPage } from './components/UserPage';
 import { SearchPage } from './components/SearchPage';
@@ -32,6 +32,7 @@ function App() {
             <Route path="/search" render={() => <SearchPage />} />
             <Route path="/video/:videoid" render={() => <VideoPage />} />
             <Route path="/addVideo" render={() => <AddVideoPage />} />
+            <Redirect exact from="/" to="/search" />
           </Switch>
         </Router>
     </div>

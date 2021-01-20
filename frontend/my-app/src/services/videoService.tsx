@@ -2,7 +2,7 @@ import axios from "axios";
 import { Ingredient, newIngredient, newVideo, Video, VideoQuery } from "../types";
 import authenticationHelper from "../utils/authenticationHelper";
 
-const baseUrl = 'http://localhost:3001/api/videos'
+const baseUrl = '/api/videos'
 
 const addVideo = async (newVideo: newVideo): Promise<Video> => {
     const res = await axios.post(baseUrl, newVideo, {headers: {Authorization: authenticationHelper.getAuthenticationHeaders().headers.Authorization}})
@@ -22,7 +22,7 @@ const removeFavourite = async (id: Video['id']) => {
 }
 
 const addIngredient = async(newIngredients: newIngredient[]): Promise<Ingredient> => {
-    const res = await axios.post('http://localhost:3001/api/ingredients', newIngredients, {headers: {Authorization: authenticationHelper.getAuthenticationHeaders().headers.Authorization}})
+    const res = await axios.post('/api/ingredients', newIngredients, {headers: {Authorization: authenticationHelper.getAuthenticationHeaders().headers.Authorization}})
     return res.data
 }
 

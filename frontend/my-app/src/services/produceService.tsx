@@ -2,7 +2,7 @@ import axios from 'axios'
 import { newProduce, Produce} from "../types"
 import authenticationHelper from '../utils/authenticationHelper'
 
-const baseUrl = 'http://localhost:3001/api/produce'
+const baseUrl = '/api/produce'
 
 const addProduce = async (newProduce: newProduce): Promise<Produce[]> => {
     const res = await axios.post(baseUrl, newProduce,
