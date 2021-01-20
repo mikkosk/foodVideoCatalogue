@@ -11,7 +11,7 @@ var devConfig = {
 };
 var proConfig = {
     connectionString: "" + process.env.DATABASE_URL,
-    ssl: true
+    ssl: { rejectUnauthorized: false }
 };
 var pool = new pg.Pool(process.env.NODE_ENV === "production" ? proConfig : devConfig);
 exports.default = pool;

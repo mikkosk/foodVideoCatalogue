@@ -13,7 +13,7 @@ const devConfig = {
 
 const proConfig = {
     connectionString: `${process.env.DATABASE_URL}`,
-    ssl: true
+    ssl: { rejectUnauthorized: false }
 }
 
 const pool = new pg.Pool(process.env.NODE_ENV === "production" ? proConfig : devConfig)
