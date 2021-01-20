@@ -7,7 +7,7 @@ export const VideoEntry: React.FC<{video: Video}> = ({video}) => {
 
     const history = useHistory()
     const compareIngredients = (a: Ingredient, b: Ingredient) => {
-        return (a.produce.pricePerGram * a.quantity) - (b.produce.pricePerGram * b.quantity)
+        return (b.quantity) - (a.quantity)
     }
 
     const mostUsedIngredients = (): Ingredient[] => {
