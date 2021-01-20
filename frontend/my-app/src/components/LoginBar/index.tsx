@@ -41,7 +41,6 @@ export const LoginBar: React.FC = () => {
             }
             showNotification(`Welcome, ${(logUser.payload as LoggedInUser).username}`, false);
         } catch (e) {
-            console.log(e)
             showNotification(e.response.data, true)
             setUsername('')
             setPassword('')

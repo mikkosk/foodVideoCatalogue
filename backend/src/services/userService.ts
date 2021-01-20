@@ -23,7 +23,6 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
         LEFT JOIN (SELECT users.*, JSON_AGG(json_build_object(
                 'videoid', videos.videoid,
                 'videourl', videos.videourl,
-                'username', videos.username,
                 'favourites', videos.favourites,
                 'clicks', videos.clicks,
                 'timeinminutes', videos.timeinminutes,
@@ -31,12 +30,13 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
                 'added', videos.added,
                 'videoname', videos.videoname,
                 'channelname', videos.channelname,
+                'username', ingredientsVid.username,
                 'ingredients', ingredientsVid.json_agg
                 )) as videos
     
             FROM users 
             JOIN videos on videos.userid = users.userid 
-            LEFT JOIN (SELECT videosArray.videoid, videosArray.json_agg
+            LEFT JOIN (SELECT videosArray.videoid, videosArray.username, videosArray.json_agg
                     from (SELECT videos.*, users.username, JSON_AGG(json_build_object(
                                 'ingredientid', ingredients.ingredientid,
                                 'produceid', produce.produceid,
@@ -61,7 +61,6 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
                 JSON_AGG(json_build_object(
                 'videoid', favourites.videoid,
                 'videourl', favourites.videourl,
-                'username', favourites.username,
                 'favourites', favourites.favourites,
                 'clicks', favourites.clicks,
                 'timeinminutes', favourites.timeinminutes,
@@ -69,13 +68,14 @@ const getUser = async (userId: User['id']): Promise<UserWithVideos> => {
                 'added', favourites.added,
                 'videoname', favourites.videoname,
                 'channelname', favourites.channelname,
+                'username', ingredientsFav.username,
                 'ingredients', ingredientsFav.json_agg
                 )) as favourites
             FROM users 
             JOIN userfavouritevideo on userfavouritevideo.userid = users.userid
             JOIN videos AS favourites ON favourites.videoid = userfavouritevideo.videoid
             
-            LEFT JOIN (SELECT favouritesArray.videoid, favouritesArray.json_agg
+            LEFT JOIN (SELECT favouritesArray.videoid, favouritesArray.username, favouritesArray.json_agg
                     from (SELECT videos.*, users.username, JSON_AGG(json_build_object(
                                 'ingredientid', ingredients.ingredientid,
                                 'produceid', produce.produceid,
@@ -108,7 +108,6 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
         LEFT JOIN (SELECT users.*, JSON_AGG(json_build_object(
                 'videoid', videos.videoid,
                 'videourl', videos.videourl,
-                'username', videos.username,
                 'favourites', videos.favourites,
                 'clicks', videos.clicks,
                 'timeinminutes', videos.timeinminutes,
@@ -116,12 +115,13 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
                 'added', videos.added,
                 'videoname', videos.videoname,
                 'channelname', videos.channelname,
+                'username', ingredientsVid.username,
                 'ingredients', ingredientsVid.json_agg
                 )) as videos
     
             FROM users 
             JOIN videos on videos.userid = users.userid 
-            LEFT JOIN (SELECT videosArray.videoid, videosArray.json_agg
+            LEFT JOIN (SELECT videosArray.videoid, videosArray.username, videosArray.json_agg
                     from (SELECT videos.*, users.username, JSON_AGG(json_build_object(
                                 'ingredientid', ingredients.ingredientid,
                                 'produceid', produce.produceid,
@@ -146,7 +146,6 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
                 JSON_AGG(json_build_object(
                 'videoid', favourites.videoid,
                 'videourl', favourites.videourl,
-                'username', favourites.username,
                 'favourites', favourites.favourites,
                 'clicks', favourites.clicks,
                 'timeinminutes', favourites.timeinminutes,
@@ -154,13 +153,14 @@ const getLoginUser = async (username: User['username']): Promise<UserWithVideos>
                 'added', favourites.added,
                 'videoname', favourites.videoname,
                 'channelname', favourites.channelname,
+                'username', ingredientsFav.username,
                 'ingredients', ingredientsFav.json_agg
                 )) as favourites
             FROM users 
             JOIN userfavouritevideo on userfavouritevideo.userid = users.userid
             JOIN videos AS favourites ON favourites.videoid = userfavouritevideo.videoid
             
-            LEFT JOIN (SELECT favouritesArray.videoid, favouritesArray.json_agg
+            LEFT JOIN (SELECT favouritesArray.videoid, favouritesArray.username, favouritesArray.json_agg
                     from (SELECT videos.*, users.username, JSON_AGG(json_build_object(
                                 'ingredientid', ingredients.ingredientid,
                                 'produceid', produce.produceid,

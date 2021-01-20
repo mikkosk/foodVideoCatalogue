@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
         res.status(401).send("No authorization to add video");
         return;
     }
-    
+
     try{
         const newVideo = toNewVideo(req.body);
 

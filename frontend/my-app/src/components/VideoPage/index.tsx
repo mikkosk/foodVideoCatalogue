@@ -106,7 +106,7 @@ export const VideoPage: React.FC = () => {
             </div>
         )
     }
-    
+
     return(
         <div>
             <section className="form-background center-text top-padding bottom-padding">
@@ -137,7 +137,7 @@ export const VideoPage: React.FC = () => {
                             <p>Cooking time: {video.timeInMinutes}</p>
                         </div>
                         <div>
-                            <p>Calories: {video.ingredients.reduce((memo, i) => memo + (i.produce.caloriesPerGram * i.quantity), 0)/100}€</p>
+                            <p>Calories: {video.ingredients.reduce((memo, i) => memo + (i.produce.caloriesPerGram * i.quantity), 0)} kcal</p>
                         </div>
                         <div>
                             <p>Price: {video.ingredients.reduce((memo, i) => memo + (i.produce.pricePerGram * i.quantity), 0) / 100}€</p>
@@ -147,6 +147,12 @@ export const VideoPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+                <div className="inside-background top-margin">
+                   <p>Added by: {video.username}</p>
+                   <p>On {new Date(Number(video.added)).toDateString()}</p>
+                </div>
+
                 <div className="top-margin">
                     {(user && user.id) &&
                         <div>

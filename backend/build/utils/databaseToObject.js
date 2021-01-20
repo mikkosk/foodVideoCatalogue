@@ -44,7 +44,7 @@ exports.videoObject = function (database) {
                         id: ingredient.produceid,
                         produceName: ingredient.producename,
                         pricePerGram: ingredient.price,
-                        caloriesPerGram: ingredient.price
+                        caloriesPerGram: ingredient.calories
                     };
                     var finalIngredient = {
                         id: ingredient.ingredientid,

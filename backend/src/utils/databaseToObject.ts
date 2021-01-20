@@ -39,14 +39,14 @@ export const ingredientObject = (database: DatabaseIngredient): Ingredient => {
 export const videoObject = (database: VideoWithIngredients | DatabaseVideo): Video => {
     try {
         var ingredients: Ingredient[] = []
-        
+
         if (database && 'ingredients' in database && database.ingredients) database.ingredients.forEach((ingredient: (DatabaseProduce & DatabaseIngredient)) => {
             if (ingredient.ingredientid) {
                 const produce: Produce = {
                     id: ingredient.produceid,
                     produceName: ingredient.producename,
                     pricePerGram: ingredient.price,
-                    caloriesPerGram: ingredient.price
+                    caloriesPerGram: ingredient.calories
                 }
 
                 const finalIngredient: Ingredient = {
