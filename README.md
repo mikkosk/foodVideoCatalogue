@@ -20,12 +20,12 @@ Running at https://food-video-catalogue.herokuapp.com/
 
 ### Example photos
 
-<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/main/images/sample-1.png">
+<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/blob/main/images/sample-1.png">
 
-<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/main/images/sample-2.png">
+<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/blob/main/images/sample-2.png">
 
-<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/main/images/sample-3.png">
+<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/blob/main/images/sample-3.png">
 
-<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/main/images/sample-4.png">
+<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/blob/main/images/sample-4.png">
 
-<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/main/images/sample-5.png">
+<img src="https://raw.githubusercontent.com/mikkosk/foodVideoCatalogue/blob/main/images/sample-5.png">
