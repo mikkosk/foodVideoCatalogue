@@ -41,28 +41,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var ingredientService_1 = __importDefault(require("../services/ingredientService"));
+var databaseToObject_1 = require("../utils/databaseToObject");
 var parser_1 = require("../utils/parser");
+var userManagement_1 = require("../utils/userManagement");
 var router = express_1.default.Router();
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newIngredients, addNew, allIngredients, addedIngredient, e_1;
+    var newIngredients, addNew, token, allIngredients, result, addedIngredient, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 newIngredients = [];
                 addNew = function (ingredient) {
-                    console.log(ingredient);
                     var newIngredient = parser_1.toNewIngredient(ingredient);
                     newIngredients = newIngredients.concat(newIngredient);
                 };
+                try {
+                    token = userManagement_1.decodedToken(req.headers.authorization);
+                    if (!token.id) {
+                        throw new Error;
+                    }
+                }
+                catch (e) {
+                    res.status(401).send("No authorization");
+                    return [2 /*return*/];
+                }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                allIngredients = req.body.ingredients;
+                allIngredients = req.body;
                 allIngredients.forEach(function (i) { addNew(i); });
-                console.log("Router");
                 return [4 /*yield*/, ingredientService_1.default.addIngredients(newIngredients)];
             case 2:
-                addedIngredient = _a.sent();
+                result = _a.sent();
+                addedIngredient = result.map(function (ingredient) { return databaseToObject_1.ingredientObject(ingredient); });
                 res.json(addedIngredient);
                 return [3 /*break*/, 4];
             case 3:

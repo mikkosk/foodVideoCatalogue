@@ -41,19 +41,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var userService_1 = __importDefault(require("../services/userService"));
+var databaseToObject_1 = require("../utils/databaseToObject");
 var parser_1 = require("../utils/parser");
+var userManagement_1 = require("../utils/userManagement");
 var router = express_1.default.Router();
-router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newUser, addedUser, e_1;
+router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, user, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                newUser = parser_1.toNewUser(req.body);
-                return [4 /*yield*/, userService_1.default.addUser(newUser)];
+                return [4 /*yield*/, userService_1.default.getUser(Number(req.params.id))];
             case 1:
-                addedUser = _a.sent();
-                res.json(addedUser);
+                result = _a.sent();
+                user = databaseToObject_1.userObject(result);
+                res.json(user);
                 return [3 /*break*/, 3];
             case 2:
                 e_1 = _a.sent();
@@ -63,19 +65,45 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); });
-router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_2;
+router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var newUser, result, addedUser, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
+                newUser = parser_1.toNewUser(req.body);
+                return [4 /*yield*/, userService_1.default.addUser(newUser)];
+            case 1:
+                result = _a.sent();
+                addedUser = databaseToObject_1.userObject(result);
+                res.json(addedUser);
+                return [3 /*break*/, 3];
+            case 2:
+                e_2 = _a.sent();
+                res.status(400).send(e_2.message);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                token = userManagement_1.decodedToken(req.headers.authorization);
+                if (req.params.id !== token.id) {
+                    res.status(401).send("No authorization to delete the user");
+                    return [2 /*return*/];
+                }
                 return [4 /*yield*/, userService_1.default.deleteUser(Number(req.params.id))];
             case 1:
                 _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                e_2 = _a.sent();
-                res.status(400).send(e_2.message);
+                e_3 = _a.sent();
+                res.status(400).send(e_3.message);
                 return [3 /*break*/, 3];
             case 3:
                 res.status(204).end();
@@ -84,21 +112,62 @@ router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, voi
     });
 }); });
 router.post('/:userid/favourite/:videoid', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_3;
+    var token, e_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, userService_1.default.favouriteVideo(Number(req.params.userid), Number(req.params.videoid))];
+                try {
+                    token = userManagement_1.decodedToken(req.headers.authorization);
+                    if (req.params.userid !== token.id) {
+                        throw new Error;
+                    }
+                }
+                catch (e) {
+                    res.status(401).send("No authorization to add favourtire video");
+                }
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, userService_1.default.addFavouriteVideo(Number(req.params.userid), Number(req.params.videoid))];
+            case 2:
                 _a.sent();
                 res.status(204).end();
-                return [3 /*break*/, 3];
+                return [3 /*break*/, 4];
+            case 3:
+                e_4 = _a.sent();
+                res.status(400).send(e_4.message);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete('/:userid/favourite/:videoid', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, e_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                try {
+                    token = userManagement_1.decodedToken(req.headers.authorization);
+                    if (req.params.userid !== token.id) {
+                        throw new Error;
+                    }
+                }
+                catch (e) {
+                    res.status(401).send("No authorization to remove favourtire video");
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, userService_1.default.removeFavouriteVideo(Number(req.params.userid), Number(req.params.videoid))];
             case 2:
-                e_3 = _a.sent();
-                res.status(400).send(e_3.message);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                _a.sent();
+                res.status(204).end();
+                return [3 /*break*/, 4];
+            case 3:
+                e_5 = _a.sent();
+                res.status(400).send(e_5.message);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

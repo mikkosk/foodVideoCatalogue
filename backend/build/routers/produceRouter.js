@@ -41,17 +41,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var produceService_1 = __importDefault(require("../services/produceService"));
+var databaseToObject_1 = require("../utils/databaseToObject");
 var parser_1 = require("../utils/parser");
+var userManagement_1 = require("../utils/userManagement");
 var router = express_1.default.Router();
 router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var allProduce, e_1;
+    var result, allProduce, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, produceService_1.default.getAllProduce()];
             case 1:
-                allProduce = _a.sent();
+                result = _a.sent();
+                allProduce = result.map(function (produce) { return databaseToObject_1.produceObject(produce); });
                 res.json(allProduce);
                 return [3 /*break*/, 3];
             case 2:
@@ -63,7 +66,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
     });
 }); });
 router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, allProduce, e_2;
+    var id, result, allProduce, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -71,7 +74,8 @@ router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0
                 id = req.params.id;
                 return [4 /*yield*/, produceService_1.default.getProduce(Number(id))];
             case 1:
-                allProduce = _a.sent();
+                result = _a.sent();
+                allProduce = databaseToObject_1.produceObject(result);
                 res.json(allProduce);
                 return [3 /*break*/, 3];
             case 2:
@@ -83,27 +87,40 @@ router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); });
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newProduce, addedProduce, e_3;
+    var token, newProduce, result, addedProduce, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                try {
+                    token = userManagement_1.decodedToken(req.headers.authorization);
+                    if (!token.id) {
+                        throw new Error('Not authorized to do this action');
+                    }
+                }
+                catch (e) {
+                    res.status(401).send(e.message);
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
                 newProduce = parser_1.toNewProduce(req.body);
                 return [4 /*yield*/, produceService_1.default.addProduce(newProduce)];
-            case 1:
-                addedProduce = _a.sent();
-                res.json(addedProduce);
-                return [3 /*break*/, 3];
             case 2:
+                result = _a.sent();
+                addedProduce = databaseToObject_1.produceObject(result);
+                res.json(addedProduce);
+                return [3 /*break*/, 4];
+            case 3:
                 e_3 = _a.sent();
                 res.status(400).send(e_3.message);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
 router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, e_4;
+    var id, token, e_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -111,6 +128,11 @@ router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, voi
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
+                token = userManagement_1.decodedToken(req.headers.authorization);
+                if (!token.id) {
+                    res.status(401).send("No authorization");
+                    return [2 /*return*/];
+                }
                 return [4 /*yield*/, produceService_1.default.deleteProduce(Number(id))];
             case 2:
                 _a.sent();

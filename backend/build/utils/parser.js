@@ -1,14 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.toNewVideo = exports.toNewUser = exports.toNewIngredient = exports.toNewProduce = void 0;
-// CHECK FOR TYPES
 var isString = function (text) {
     return typeof text === 'string' || text instanceof String;
 };
 var isNumber = function (number) {
     return typeof number === 'number' || number instanceof Number;
 };
-// PARSE GENERIC FIELDS
 var parseGenericTextField = function (text, error) {
     if (!text || !isString(text)) {
         throw new Error('Missing or invalid ' + error);
@@ -27,7 +25,6 @@ var parseGenericBooleanField = function (boolean, error) {
     }
     throw new Error('Missing or invalid ' + error);
 };
-// PARSE INTO TYPES
 exports.toNewProduce = function (object) {
     var newProduce = {
         produceName: parseGenericTextField(object.produceName, "produce name"),
@@ -53,8 +50,9 @@ exports.toNewUser = function (object) {
 };
 exports.toNewVideo = function (object) {
     var newVideo = {
-        //Urlille oma parseri kun api lisätään
+        userId: parseGenericNumberField(object.userId, "user"),
         videoUrl: parseGenericTextField(object.videoUrl, "url"),
+        username: parseGenericTextField(object.username, "username"),
         timeInMinutes: parseGenericNumberField(object.timeInMinutes, "time"),
         vegetarian: parseGenericBooleanField(object.vegetarian, "vegetarian "),
         added: Date.now()

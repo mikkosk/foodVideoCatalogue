@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,30 +53,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var parser_1 = require("../utils/parser");
 var videoService_1 = __importDefault(require("../services/videoService"));
+var userManagement_1 = require("../utils/userManagement");
+var databaseToObject_1 = require("../utils/databaseToObject");
+var axios_1 = __importDefault(require("axios"));
 var router = express_1.default.Router();
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newVideo, userId, addedVideo, e_1;
+    var token, newVideo, result, ytResult, videoName, channelName, newVideoWithInfo, userId, result_1, addedVideo, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                newVideo = parser_1.toNewVideo(req.body.video);
-                userId = Number(req.headers.authorization);
-                return [4 /*yield*/, videoService_1.default.addVideo(newVideo, userId)];
+                try {
+                    token = userManagement_1.decodedToken(req.headers.authorization);
+                    if (!token.id) {
+                        throw new Error;
+                    }
+                }
+                catch (e) {
+                    res.status(401).send("No authorization to add video");
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
             case 1:
-                addedVideo = _a.sent();
-                res.json(addedVideo);
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 7, , 8]);
+                newVideo = parser_1.toNewVideo(req.body);
+                return [4 /*yield*/, axios_1.default.get("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=" + newVideo.videoUrl.replace('https://www.youtube.com/watch?v=', '') + "&key=" + process.env.API_SECRET)];
             case 2:
+                result = _a.sent();
+                ytResult = result.data;
+                if (!!ytResult) return [3 /*break*/, 3];
+                throw new Error("We can't confirm if the video exists at the moment. Please try again later!");
+            case 3:
+                if (!(ytResult.pageInfo.totalResults !== 1)) return [3 /*break*/, 4];
+                throw new Error("Video was not found!");
+            case 4:
+                videoName = ytResult.items[0].snippet.title;
+                channelName = ytResult.items[0].snippet.channelTitle;
+                newVideoWithInfo = __assign(__assign({}, newVideo), { videoName: videoName, channelName: channelName });
+                userId = Number(token.id);
+                return [4 /*yield*/, videoService_1.default.addVideo(newVideoWithInfo, userId)];
+            case 5:
+                result_1 = _a.sent();
+                addedVideo = databaseToObject_1.videoObject(result_1);
+                res.json(addedVideo);
+                _a.label = 6;
+            case 6: return [3 /*break*/, 8];
+            case 7:
                 e_1 = _a.sent();
                 res.status(400).send(e_1.message);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); });
 router.get('/:videoId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var videoId, video, e_2;
+    var videoId, result, video, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -73,7 +114,8 @@ router.get('/:videoId', function (req, res) { return __awaiter(void 0, void 0, v
                 videoId = req.params.videoId;
                 return [4 /*yield*/, videoService_1.default.getVideo(Number(videoId))];
             case 1:
-                video = _a.sent();
+                result = _a.sent();
+                video = databaseToObject_1.videoObject(result);
                 res.json(video);
                 return [3 /*break*/, 3];
             case 2:
@@ -84,15 +126,17 @@ router.get('/:videoId', function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var videos, e_3;
+router.post('/get', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var videoQuery, result, videos, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, videoService_1.default.getVideos()];
+                videoQuery = req.body;
+                return [4 /*yield*/, videoService_1.default.getVideos(videoQuery)];
             case 1:
-                videos = _a.sent();
+                result = _a.sent();
+                videos = result.map(function (video) { return databaseToObject_1.videoObject(video); });
                 res.json(videos);
                 return [3 /*break*/, 3];
             case 2:
@@ -103,40 +147,110 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
         }
     });
 }); });
-router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_4;
+router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, videos, e_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, videoService_1.default.deleteVideo(Number(req.params.id))];
+                return [4 /*yield*/, videoService_1.default.getVideos({})];
             case 1:
-                _a.sent();
+                result = _a.sent();
+                videos = result.map(function (result) { return databaseToObject_1.videoObject(result); });
+                res.json(videos);
                 return [3 /*break*/, 3];
             case 2:
                 e_4 = _a.sent();
                 res.status(400).send(e_4.message);
                 return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, result, video, e_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                token = userManagement_1.decodedToken(req.headers.authorization);
+                return [4 /*yield*/, videoService_1.default.getVideo(Number(req.params.id))];
+            case 1:
+                result = _a.sent();
+                video = databaseToObject_1.videoObject(result);
+                if (video.userId === Number(token.id)) {
+                    res.status(401).send("No authorization to add video");
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, videoService_1.default.deleteVideo(Number(req.params.id))];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
             case 3:
+                e_5 = _a.sent();
+                res.status(400).send(e_5.message);
+                return [3 /*break*/, 4];
+            case 4:
                 res.status(204).end();
                 return [2 /*return*/];
         }
     });
 }); });
 router.put('/:id/click', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var updatedVideo, e_5;
+    var result, updatedVideo, e_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, videoService_1.default.addClick(Number(req.params.id))];
             case 1:
-                updatedVideo = _a.sent();
+                result = _a.sent();
+                updatedVideo = databaseToObject_1.videoObject(result);
                 res.json(updatedVideo);
                 return [3 /*break*/, 3];
             case 2:
-                e_5 = _a.sent();
-                res.status(400).send(e_5.message);
+                e_6 = _a.sent();
+                res.status(400).send(e_6.message);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+router.put('/:id/favourite/add', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, updatedVideo, e_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, videoService_1.default.addFavourite(Number(req.params.id))];
+            case 1:
+                result = _a.sent();
+                updatedVideo = databaseToObject_1.videoObject(result);
+                res.json(updatedVideo);
+                return [3 /*break*/, 3];
+            case 2:
+                e_7 = _a.sent();
+                res.status(400).send(e_7.message);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+router.put('/:id/favourite/remove', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, updatedVideo, e_8;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, videoService_1.default.removeFavourite(Number(req.params.id))];
+            case 1:
+                result = _a.sent();
+                updatedVideo = databaseToObject_1.videoObject(result);
+                res.json(updatedVideo);
+                return [3 /*break*/, 3];
+            case 2:
+                e_8 = _a.sent();
+                res.status(400).send(e_8.message);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

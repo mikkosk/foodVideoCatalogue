@@ -7,10 +7,10 @@ var Pool = require("pg").Pool;
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 var pool = new Pool({
-    user: "postgres",
-    password: process.env.DBP,
-    host: "localhost",
-    port: 5432,
-    database: "fvc"
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
+    host: process.env.DBHOST,
+    port: process.env.DBPORT,
+    database: process.env.DBDB,
 });
 exports.default = pool;

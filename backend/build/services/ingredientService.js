@@ -48,7 +48,6 @@ var addIngredients = function (entries) { return __awaiter(void 0, void 0, void 
             case 0:
                 cs = new pgp.helpers.ColumnSet(['videoId', 'quantity', 'produceId'], { table: 'ingredients' });
                 query = pgp.helpers.insert(entries, cs).toLowerCase() + " returning *";
-                console.log(query);
                 return [4 /*yield*/, db_1.default.query(query)];
             case 1:
                 newIngredients = _a.sent();

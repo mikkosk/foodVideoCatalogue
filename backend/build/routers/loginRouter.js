@@ -39,57 +39,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var db_1 = __importDefault(require("../db"));
-var getAllProduce = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var allProduce;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, db_1.default.query("SELECT * FROM produce")];
-            case 1:
-                allProduce = _a.sent();
-                return [2 /*return*/, allProduce.rows];
-        }
-    });
-}); };
-var getProduce = function (produceId) { return __awaiter(void 0, void 0, void 0, function () {
-    var produce;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, db_1.default.query("SELECT * FROM produce WHERE produceid = $1", [produceId])];
-            case 1:
-                produce = _a.sent();
-                return [2 /*return*/, produce.rows[0]];
-        }
-    });
-}); };
-var addProduce = function (entry) { return __awaiter(void 0, void 0, void 0, function () {
-    var produceName, pricePerGram, caloriesPerGram, newProduce, e_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var bcrypt_1 = __importDefault(require("bcrypt"));
+var userService_1 = __importDefault(require("../services/userService"));
+var express_1 = __importDefault(require("express"));
+var databaseToObject_1 = require("../utils/databaseToObject");
+var router = express_1.default.Router();
+router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, user, rightCredentials, _a, userToken, token, id, username, hashcode, favouriteVideos, videos, loggedInUser, e_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                produceName = entry.produceName, pricePerGram = entry.pricePerGram, caloriesPerGram = entry.caloriesPerGram;
-                _a.label = 1;
+                _b.trys.push([0, 5, , 6]);
+                return [4 /*yield*/, userService_1.default.getLoginUser(req.body.username)];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, db_1.default.query("INSERT INTO produce (produceName, price, calories) VALUES($1, $2, $3) RETURNING *", [produceName, pricePerGram, caloriesPerGram])];
-            case 2:
-                newProduce = _a.sent();
-                return [2 /*return*/, newProduce.rows[0]];
+                result = _b.sent();
+                user = databaseToObject_1.userObject(result);
+                if (!(user === null)) return [3 /*break*/, 2];
+                _a = false;
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, bcrypt_1.default.compare(req.body.password, user.hashcode)];
             case 3:
-                e_1 = _a.sent();
-                throw new Error("Could not add the produce! Make sure it does not already exist!");
-            case 4: return [2 /*return*/];
+                _a = _b.sent();
+                _b.label = 4;
+            case 4:
+                rightCredentials = _a;
+                if (!(user && rightCredentials)) {
+                    res.status(401).send("False credentials");
+                    return [2 /*return*/];
+                }
+                userToken = {
+                    user: user.username,
+                    id: String(user.id)
+                };
+                if (!process.env.SECRET) {
+                    res.status(500).send("Unexplained problem");
+                    return [2 /*return*/];
+                }
+                token = jsonwebtoken_1.default.sign(userToken, process.env.SECRET);
+                id = user.id, username = user.username, hashcode = user.hashcode, favouriteVideos = user.favouriteVideos, videos = user.videos;
+                loggedInUser = {
+                    token: token,
+                    username: username,
+                    id: id,
+                    hashcode: hashcode,
+                    favouriteVideos: favouriteVideos,
+                    videos: videos
+                };
+                res.status(200).send(loggedInUser);
+                return [3 /*break*/, 6];
+            case 5:
+                e_1 = _b.sent();
+                res.status(400).send(e_1.message);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
-}); };
-var deleteProduce = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, db_1.default.query("DELETE FROM produce WHERE produceid = $1", [id])];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.default = { addProduce: addProduce, deleteProduce: deleteProduce, getAllProduce: getAllProduce, getProduce: getProduce };
+}); });
+exports.default = router;
