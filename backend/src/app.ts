@@ -11,7 +11,7 @@ import loginRouter from './routers/loginRouter'
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static('buildFrontend'));
+app.use(express.static('buildFrontend/build'));
 
 app.use('/api/user', userRouter);
 app.use('/api/videos', videoRouter);
