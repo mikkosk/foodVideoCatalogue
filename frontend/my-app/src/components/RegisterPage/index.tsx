@@ -41,7 +41,7 @@ export const RegisterPage: React.FC = () => {
 
         try {
             const result = await userService.addUser(newUser)
-            
+
             dispatch(setUser(result));
 
             (document.getElementById('username-input') as HTMLInputElement).value = "";
@@ -64,41 +64,41 @@ export const RegisterPage: React.FC = () => {
     }
     
     return(
-        <div>
+        <div className="form-background center-text top-padding bottom-padding">
             <h1> Create new user:</h1>
             <form onSubmit={submit}>
-                <div>
+                <div className="top-margin">
                     <div>
                         <p>Username</p>
                     </div>
                     <div>
-                        <input id="username-input" value={username} onChange={({target}) => setUsername(target.value)} />
+                        <input className="text-input half" id="username-input" value={username} onChange={({target}) => setUsername(target.value)} />
                     </div>
                 </div>
-                <div>
+                <div className="top-margin">
                     <div>
                         <p>Password</p>
                     </div>
                     <div>
-                        <input id="password-input" type='password' value={password} onChange={({target}) => setPassword(target.value)} />
+                        <input className="text-input half" id="password-input" type='password' value={password} onChange={({target}) => setPassword(target.value)} />
                     </div>
                 </div>
-                <div>
+                <div className="top-margin">
                     <div>
                         <p>Password again</p>
                     </div>
                     <div>
-                        <input id="password-again-input" type='password' value={passwordAgain} onChange={({target}) => setPasswordAgain(target.value)} />
+                        <input className="text-input half" id="password-again-input" type='password' value={passwordAgain} onChange={({target}) => setPasswordAgain(target.value)} />
                     </div>
                 </div>
-                <div>
+                <div className="top-margin">
                     {(!matching && notEmpty) && 
                         <div>
                             <p>The passwords do not match!</p>
                         </div>
                     }
-                    <div>
-                        <button type='submit' disabled={!(matching && notEmpty)}>Create account!</button>
+                    <div className="top-margin">
+                        <button className="add-button" type='submit' disabled={!(matching && notEmpty)}>Create account!</button>
                     </div>
                 </div>
             </form>

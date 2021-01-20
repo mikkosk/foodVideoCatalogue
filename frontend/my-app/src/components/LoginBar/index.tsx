@@ -30,14 +30,21 @@ export const LoginBar: React.FC = () => {
 
     const submitLogin = async (username: string, password: string) => {
         try {
+            (document.getElementById('login-username-input') as HTMLInputElement).value = "";
+            (document.getElementById('login-password-input') as HTMLInputElement).value = "";
             const result = await loginService.login(username, password)
+            setUsername('')
+            setPassword('')
             const logUser = dispatch(loadUser(result))
             if(logUser.payload) {
                 loginStorage.saveUser(logUser.payload as LoggedInUser)
             }
-            showNotification(`Welcome, ${(logUser.payload as LoggedInUser).username}`, false)
+            showNotification(`Welcome, ${(logUser.payload as LoggedInUser).username}`, false);
         } catch (e) {
+            console.log(e)
             showNotification(e.response.data, true)
+            setUsername('')
+            setPassword('')
         }
     }
 
@@ -54,11 +61,12 @@ export const LoginBar: React.FC = () => {
                     <div className="bar">
                         <div className="login-form">
                             <p>You are not logged in </p>
-                            <input className="text-input" placeholder="Username" value={username} onChange={({target}) => setUsername(target.value)} /> 
-                            <input className="text-input" placeholder="Password"type='password' value={password} onChange={({target}) => setPassword(target.value)} />
+                            <input id="login-username-input" className="text-input" placeholder="Username" value={username} onChange={({target}) => setUsername(target.value)} /> 
+                            <input id="login-password-input" className="text-input" placeholder="Password"type='password' value={password} onChange={({target}) => setPassword(target.value)} />
+                            <button className="add-button" type='submit'>Log in</button>
                         </div>
                     </div>
-                    <button className="bar end-m end-f bar-button" type='submit'>Log in</button>
+                    <button className="bar end-m end-f bar-button" type='button' onClick={() => history.push('/register')}>Register</button>
                 </form>
             }
 
