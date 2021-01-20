@@ -21,13 +21,13 @@ export const VideoEntry: React.FC<{video: Video}> = ({video}) => {
     const calories = (): Number => {
         var calories = 0
         video.ingredients.forEach((i: Ingredient) => calories += (i.produce.caloriesPerGram * i.quantity))
-        return calories
+        return Math.round((calories + Number.EPSILON) * 100) / 100
     }
     
     const price = (): Number => {
         var price = 0
         video.ingredients.forEach((i: Ingredient) => price += (i.produce.pricePerGram * i.quantity))
-        return price/100
+        return Math.round((price/100 + Number.EPSILON) * 100) / 100
     }
 
     return (
